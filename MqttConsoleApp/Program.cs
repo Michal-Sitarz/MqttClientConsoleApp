@@ -12,11 +12,12 @@ namespace MqttConsoleApp
         static void Main(string[] args)
         {
             const string _mqttBroker = "192.168.1.98";
+            const string _mqttClientId = "ConsoleApp";
             List<string> topics = new List<string> { "greenhouse/conditions", "mosTst1" };
 
             Console.WriteLine("Starting application...");
 
-            var mqtt = StartMqttClientAsync(_mqttBroker).Result;
+            var mqtt = StartMqttClientAsync(_mqttBroker, _mqttClientId).Result;
 
             if (mqtt.connected)
             {
@@ -84,7 +85,7 @@ namespace MqttConsoleApp
             }
         }
 
-        static async Task<(IMqttClient client, bool connected)> StartMqttClientAsync(string brokerIpAddress)
+        static async Task<(IMqttClient client, bool connected)> StartMqttClientAsync(string brokerIpAddress, string appId)
         {
             // connect
             var client = await MqttClient.CreateAsync(brokerIpAddress, new MqttConfiguration());
@@ -92,7 +93,7 @@ namespace MqttConsoleApp
 
             try
             {
-                var mqttSession = await client.ConnectAsync(new MqttClientCredentials(clientId: "consoleAppOne"));
+                var mqttSession = await client.ConnectAsync(new MqttClientCredentials(clientId: appId));
                 Console.WriteLine("MQTT: connected! :)");
             }
             catch (Exception)
